@@ -20,8 +20,9 @@
 ; as immediate children
 ;
 (defn flatten-statement-list [node]
-  (throw (RuntimeException. "TODO - implement flatten-statement-list")))
-
+  (let [stmt (node/get-child node 0)
+        stmt-ast (build-ast stmt)]
+    (node/make-node :statement_list [stmt-ast])))
 ; Returns an AST node whose symbol is the same as the parse node,
 ; and whose children are ASTs constructed from the children of the
 ; parse node.
@@ -46,7 +47,10 @@
   (case (:symbol node)
     :unit (recur-on-children node)
     :statement_list (flatten-statement-list node)
-
+    :var_decl_statement (build-ast (node/get-child node))
+    :expression_statement ()
+    :expression ()
+    ;Terminal Can't be parsed further
     ; TODO: other cases
      
     ; The default case just leaves the parse node unchanged.
